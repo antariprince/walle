@@ -35,6 +35,11 @@
                   </div>
                 </div>
 
+                  <div class="form-group" id="collection">
+                  <label>Collection</label>
+                  <input type="text" name="collection" class="form-control" value="{{ old('collection') }}">
+                  </div>
+
                   <div class="form-group" id="page_string">
                   <label>Page String</label>
                   <input type="text" name="page_string" class="form-control" value="{{ old('page_string') }}">

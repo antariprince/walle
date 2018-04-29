@@ -18,6 +18,7 @@ class CreateUserSitesTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('url');
             $table->string('singlepage')->default('multi');
+            $table->string('collection')->nullable();
             $table->string('scrape_data')->nullable();
             $table->text('page_string')->nullable();
             $table->softDeletes();

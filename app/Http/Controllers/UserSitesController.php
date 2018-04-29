@@ -54,6 +54,7 @@ class UserSitesController extends Controller
             'url' => $r->url,
             'title' => strtolower($r->title),
             'user_id' => Auth::id(),
+            'collection' => $r->collection,
             'singlepage' => $r->singlepage,
             'page_string' => $r->page_string,
             'scrape_data' => $algo
@@ -110,6 +111,7 @@ class UserSitesController extends Controller
         $d->url = $r->url;
         $d->singlepage = $r->singlepage;
         $d->page_string = $r->page_string;
+        $d->collection = $r->collection;
         $d->scrape_data = $algo;
         $d->save();
         //Session::flash('success','Discussion content updated.');
@@ -159,11 +161,33 @@ class UserSitesController extends Controller
     public function preview($id){
         $siteitem = UserSites::where('id',$id)->where('user_id',Auth::id())->first();
         $siteitem['scrape_data'] = json_decode($siteitem['scrape_data'],true);
-        //dd($siteitem['scrape_data']);
-        $crawler = Goutte::request('GET', $siteitem['url']);
+        
+        $exit = 0;
+        $res = array();
+        for($z = 0; $exit != 1; $z++){
+        $baseLink = $siteitem['url'];
+        if($ == 0){
+        $crawler = Goutte::request('GET', $baseLink);
+            if(count($crawler) > 0){
+                $res = $this->$nodeFilter($res,$crawler,$siteitem);
+            }
+        }
+        else{
+            $pageAppend = str_replace('***pagenum***',$z,$siteitem['page_string'])
+            $crawler = Goutte::request('GET', $baseLink.$pageAppend);
+            if(count($crawler) > 0){
+                $res = $this->$nodeFilter($res,$crawler,$siteitem);
+            }
+        }
+        
+        }
+        //exit;
+        dd($resNode);
+    }
 
-        $resNode = $crawler->filter('.product_whole')->each(function ($node) use ($siteitem){
-            $res = array();
+    public function $nodeFilter($res,$crawler,$siteitem){
+        $resNode = $crawler->filter($siteitem['collection'])->each(function ($node) use ($siteitem){
+            
             foreach($siteitem['scrape_data'] as $key => $item){
                 $tempVal = '';
                 $section = $node->filter($item['element']);
@@ -194,8 +218,6 @@ class UserSitesController extends Controller
             }
             return $res;
         });
-        //exit;
-        dd($resNode);
     }
 
     public function scrapeGetPosition($section,$item){

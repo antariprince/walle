@@ -35,6 +35,11 @@
                   </div>
                 </div>
 
+                  <div class="form-group" id="collection">
+                  <label>Collection</label>
+                  <input type="text" name="collection" class="form-control" value="{{ $siteitem->collection }}" >
+                  </div>
+
                   <div class="form-group" id="page_string">
                   <label>Page String</label>
                   <input type="text" name="page_string" class="form-control" @if($siteitem->singlepage == 'multi')value="{{ $siteitem->page_string }}" @endif>
