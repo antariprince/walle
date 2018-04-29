@@ -1,0 +1,33 @@
+Positions Field:
+
+Determines which noted to take if selector produces more than one sub nodes. If not set, will return the first instance/result.
+can be set using 0,1,2,3 or 0-3 or 1,3 or combinations and repeat. 1,2,0,4-7,1 is just an example. Items are contaticated using
+*** symbol to separete them, you may use filter to replace this with something else on the filter field. example: {"replace":{"key":"***","changeto":"</br>"}}
+
+Filters Field:
+filter fields allows you to make changes on the resulting string of the nodes, you may add/repeat as many filters as long as they are applicable.
+
+
+prepend
+
+-adds a string before the resulting string {"prepend":"http://buyee.jp"}
+
+append
+
+-adds a string after the resulting string {"append":"?page=2"}
+
+spacing
+
+-fixes spacing by removing extra white spaces {"spacing":"0"}
+
+replace
+
+-replace string with another string, using key and changeto elements {"replace":{"key":"***","changeto":"*"}}
+
+explode
+
+-scatters string into array and select which entry to get by giving using the key and position name value pair {"explode":{"key":"yen","position":"0"}}
+
+money
+
+-formats a string to money format {"money":"0"}

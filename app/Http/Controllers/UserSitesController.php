@@ -14,7 +14,7 @@ class UserSitesController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public $keys = ['title','element','attribute','filters'];
+    public $keys = ['title','element','attribute','positions','filters'];
     public $required = ['title','element','attribute'];
     
     public function index()
@@ -42,17 +42,13 @@ class UserSitesController extends Controller
      */
     public function store(Request $request)
     {
-        $keys = ['element','attribute','filters'];
-        $required = ['element','attribute'];
         
         $r = request();
-        dd($r);
         $this->validate($r,[
             'url' => 'required'
         ]);
 
         $algo = $this->buildScrapeAlgo($r);
-        //dd($algo);
 
         $site = UserSites::create([
             'url' => $r->url,
@@ -134,6 +130,7 @@ class UserSitesController extends Controller
     }
 
     public function buildScrapeAlgo($r){
+        //dd($r);
         $stringAlgo = array();
         $count = count($r[$this->keys[0]]);
         for($i = 0; $i < $count; $i++){
@@ -169,17 +166,24 @@ class UserSitesController extends Controller
             $res = array();
             foreach($siteitem['scrape_data'] as $key => $item){
                 $tempVal = '';
+                $section = $node->filter($item['element']);
+                if(count($section) > 0){
                 if($item['attribute'] == 'text'){
-                $tempVal = trim($node->filter($item['element'])->text());
-                }
-                else if($item['attribute'] == "grouptext"){
-                    $tempNode = $node->filter($item['element'])->reduce(function ($node, $i) {
-                        return $i == 1;
-                    });
-                    $tempVal = trim($tempNode->text());
+                    if(count($section) > 1){
+                        //$tempVal = '';
+                        $tempVal = $this->scrapeGetPosition($section,$item);
+                    }
+                    else{
+                        $tempVal = trim($section->text());
+                    }
                 }
                 else{
-                    $tempVal = trim($node->filter($item['element'])->attr($item['attribute']));
+                    if(count($section) > 1){
+                        $tempVal = $this->scrapeGetPosition($section,$item);
+                    }
+                    else{
+                        $tempVal = trim($section->attr($item['attribute']));
+                    }
                 }
                 if($item['filters'] != null){
                     $item['filters'] = json_decode($item['filters'],true);
@@ -187,14 +191,80 @@ class UserSitesController extends Controller
                 }
                 $res[$item['title']] = $tempVal;
             }
+            }
             return $res;
         });
         //exit;
         dd($resNode);
     }
 
+    public function scrapeGetPosition($section,$item){
+        $res = array();
+        $res = $section->each(function ($node) use ($item){
+            if($item['attribute'] == 'text'){
+            return $node->text();
+            }
+            else{
+                return $node->attr($item['attribute']);
+            }
+        });
+        $resultString = '';
+        $concatCount = 0;
+        if(strpos($item['positions'], ',') !== false) {
+            $positionsList = explode(',', $item['positions']);
+            foreach($positionsList as $key => $positionItem){
+                if(strpos($positionItem, '-') !== false) {
+                    $rangeList = explode('-', $positionItem);
+                    for($i = $rangeList[0]; $i <= $rangeList[1]; $i++){
+                        if($concatCount == 0){
+                        $resultString.=$res[$i];
+                        }
+                        else{
+                            $resultString.='***'.$res[$i];
+                        }
+                    }
+                }
+                else{
+                    if($concatCount == 0){
+                    $resultString.=$res[$positionItem];
+                    }
+                    else{
+                        $resultString.="***".$res[$positionItem];
+                    }
+                }
+                $concatCount++;
+            }
+            }
+        else{
+
+            if(strpos($item['positions'], '-') !== false) {
+            $positionsListX = explode('-', $item['positions']);
+            for($x = $positionsListX[0]; $x <= $positionsListX[1]; $x++){
+                    if($concatCount == 0){
+                    $resultString.=$res[$x];
+                    }
+                    else{
+                        $resultString.='***'.$res[$x];
+                    }
+                    $concatCount++;
+                }  
+            }
+            else{
+                if($item['positions']){
+                $resultString = $res[$item['positions']];
+                }
+                else{
+                $resultString = $res[0];
+                }
+                $concatCount++;
+            }
+        }
+        return $resultString;
+    }
+
 
     public function filterItem($item,$filters){
+
         foreach($filters as $key => $filter){
             switch ($key) {
                 case 'explode':
@@ -211,6 +281,12 @@ class UserSitesController extends Controller
                     break;
                 case 'money':
                     $item = $this->scrapeMoney($item,$filter);
+                    break;
+                case 'spacing':
+                    $item = $this->scrapeSpacing($item,$filter);
+                    break;
+                case 'replace':
+                    $item = $this->scrapeReplace($item,$filter);
                     break;
                 default:
                     break;
@@ -235,6 +311,15 @@ class UserSitesController extends Controller
     }
 
     public function scrapeMoney($item, $filter){
-        return preg_replace("/[^0-9,.]/", "", $item);
+        return trim(preg_replace("/[^0-9,.]/", "", $item));
+    }
+
+    public function scrapeSpacing($item, $filter){
+        return trim(preg_replace('/\s+/', ' ', $item));
+    }
+
+    public function scrapeReplace($item, $filter){
+        $temp = trim(str_replace($filter['key'], $filter['changeto'], $item));
+        return $temp;
     }
 }

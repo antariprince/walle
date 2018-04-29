@@ -48,13 +48,16 @@
                     <div class="box-body dynamic_scrape_json">
                       <div class="row">
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Title" name="title[]" value="{{ $siteitem->scrape_data[$i]['title'] }}">
+                          <input type="text" class="form-control" placeholder="Title" name="title[]" value="{{ $siteitem->scrape_data[$i]['title'] }}" required>
                         </div>
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Target Element" name="element[]" value="{{ $siteitem->scrape_data[$i]['element'] }}">
+                          <input type="text" class="form-control" placeholder="Target Element" name="element[]" value="{{ $siteitem->scrape_data[$i]['element'] }}" required>
                         </div>
-                        <div class="col-xs-3">
-                          <input type="text" class="form-control" placeholder="Attribute" name="attribute[]" value="{{ $siteitem->scrape_data[$i]['attribute'] }}">
+                        <div class="col-xs-1">
+                          <input type="text" class="form-control" placeholder="Attribute" name="attribute[]" value="{{ $siteitem->scrape_data[$i]['attribute'] }}" required>
+                        </div>
+                        <div class="col-xs-2">
+                          <input type="text" class="form-control" placeholder="Positions i.e 1,2,3,4-7,8" name="positions[]" value="{{ $siteitem->scrape_data[$i]['positions'] }}">
                         </div>
                         <div class="col-xs-4">
                           <input type="text" class="form-control" placeholder="Filters" name="filters[]" value="{{ $siteitem->scrape_data[$i]['filters'] }}">
@@ -66,13 +69,16 @@
                     <div class="box-body dynamic_scrape_json">
                       <div class="row">
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Title" name="title[]" value="{{ $siteitem->scrape_data[$i]['title'] }}">
+                          <input type="text" class="form-control" placeholder="Title" name="title[]" value="{{ $siteitem->scrape_data[$i]['title'] }}" required>
                         </div>
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Target Element" name="element[]" value="{{ $siteitem->scrape_data[$i]['element'] }}">
+                          <input type="text" class="form-control" placeholder="Target Element" name="element[]" value="{{ $siteitem->scrape_data[$i]['element'] }}" required>
                         </div>
-                        <div class="col-xs-3">
-                          <input type="text" class="form-control" placeholder="Attribute" name="attribute[]" value="{{ $siteitem->scrape_data[$i]['attribute'] }}">
+                        <div class="col-xs-1">
+                          <input type="text" class="form-control" placeholder="Attribute" name="attribute[]" value="{{ $siteitem->scrape_data[$i]['attribute'] }}" required>
+                        </div>
+                        <div class="col-xs-2">
+                          <input type="text" class="form-control" placeholder="Positions" name="positions[]" value="{{ $siteitem->scrape_data[$i]['positions'] }}">
                         </div>
                         <div class="col-xs-4">
                           <input type="text" class="form-control" placeholder="Filters" name="filters[]" value="{{ $siteitem->scrape_data[$i]['filters'] }}">

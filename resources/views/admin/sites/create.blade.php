@@ -45,13 +45,16 @@
                     <div class="box-body dynamic_scrape_json">
                       <div class="row">
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Title" name="title[]">
+                          <input type="text" class="form-control" placeholder="Title" name="title[]" required>
                         </div>
                         <div class="col-xs-2">
-                          <input type="text" class="form-control" placeholder="Target Element" name="element[]">
+                          <input type="text" class="form-control" placeholder="Target Element" name="element[]" required>
                         </div>
-                        <div class="col-xs-3">
-                          <input type="text" class="form-control" placeholder="Attribute" name="attribute['title'][]">
+                        <div class="col-xs-1">
+                          <input type="text" class="form-control" placeholder="Attribute" name="attribute[]" required>
+                        </div>
+                        <div class="col-xs-2">
+                          <input type="text" class="form-control" placeholder="Positions" name="positions[]" >
                         </div>
                         <div class="col-xs-4">
                           <input type="text" class="form-control" placeholder="Filters" name="filters[]">
