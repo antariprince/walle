@@ -47,10 +47,12 @@
                   <td><a href="{{ $item->url }}">{{ $item->url }}</a></td>
                   <td>
                     <div class="btn-group">
-                      <a href="{{ route('admin.sites.preview',['id'=> $item->id]) }}" type="button" class="btn btn-info"><i class="fa fa-search"></i></a>
+                      <a href="{{ route('admin.sites.preview',['id'=> $item->id]) }}" type="button" class="btn bg-maroon"><i class="fa fa-search"></i></a>
                       <a href="{{ route('admin.sites.downloadcsv',['id'=> $item->id]) }}" type="button" class="btn bg-olive"><i class="fa fa-table"></i></a>
+                      <a href="{{ route('admin.sites.getjson',['id'=> $item->id]) }}" target="_blank" type="button" class="btn bg-purple"><i class="fa fa-rss"></i></a>
                       <a href="{{ route('admin.sites.edit',['id'=> $item->id]) }}" type="button" class="btn btn-info"><i class="fa fa-edit"></i></a>
                       <a href="{{ route('admin.sites.destroy',['id'=> $item->id]) }}" type="button" class="btn btn-danger"><i class="fa fa-close"></i></a>
+
                     </div>
                   </td>
 

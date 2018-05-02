@@ -159,6 +159,12 @@ class UserSitesController extends Controller
         return view('admin.sites.preview')->with('data',$data);
     }
 
+     public function getJson($id){
+        $data = $this->fetchData($id);
+        echo(json_encode($data));
+        exit;
+    }
+
     public function downloadCsv($id){
         $data = $this->fetchData($id);
         $this->exportCsv($data); 
