@@ -49,10 +49,8 @@ class UserSitesController extends Controller
         ]);
 
         $algo = $this->buildScrapeAlgo($r);
-
         $site = UserSites::create([
             'url' => $r->url,
-            'title' => strtolower($r->title),
             'user_id' => Auth::id(),
             'collection' => $r->collection,
             'singlepage' => $r->singlepage,
@@ -156,38 +154,84 @@ class UserSitesController extends Controller
         return array_values($stringAlgo);
     }
 
-
-
     public function preview($id){
+        $data = $this->fetchData($id);
+        return view('admin.sites.preview')->with('data',$data);
+    }
+
+    public function downloadCsv($id){
+        $data = $this->fetchData($id);
+        $this->exportCsv($data); 
+    }
+
+
+    public function fetchData($id){
         $siteitem = UserSites::where('id',$id)->where('user_id',Auth::id())->first();
         $siteitem['scrape_data'] = json_decode($siteitem['scrape_data'],true);
         
         $exit = 0;
-        $res = array();
-        for($z = 0; $exit != 1; $z++){
+        $tempRes = array();
         $baseLink = $siteitem['url'];
-        if($ == 0){
+        if($siteitem['singlepage'] == 'multi'){
+        for($z = 1; $exit != 1 && $z <= 7; $z++){
+        if($z == 1){
         $crawler = Goutte::request('GET', $baseLink);
             if(count($crawler) > 0){
-                $res = $this->$nodeFilter($res,$crawler,$siteitem);
+                $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
+            }
+            else{
+                $exit = 1;
             }
         }
         else{
-            $pageAppend = str_replace('***pagenum***',$z,$siteitem['page_string'])
+            $pageAppend = str_replace('***pagenum***',$z,$siteitem['page_string']);
             $crawler = Goutte::request('GET', $baseLink.$pageAppend);
             if(count($crawler) > 0){
-                $res = $this->$nodeFilter($res,$crawler,$siteitem);
+                $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
+            }
+            else{
+                $exit = 1;
             }
         }
         
         }
-        //exit;
-        dd($resNode);
+        }
+        else{
+            $crawler = Goutte::request('GET', $baseLink);
+            $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
+        }
+        return $tempRes;
+        //$this->exportCsv($tempRes); 
+        //return view('admin.sites.preview')->with('data',$tempRes);
+        //dd($tempRes);
     }
 
-    public function $nodeFilter($res,$crawler,$siteitem){
+    public function exportCsv($data){  
+
+        $selected_array = array();
+        foreach($data[0] as $key => $item){
+            $selected_array[] = $key;
+        }
+
+        $Array_data = $data;
+
+        $Filename ='csv_'.now().'.csv';
+        header('Content-Type: text/csv; charset=utf-8');
+        Header('Content-Type: application/force-download');
+        header('Content-Disposition: attachment; filename='.$Filename.'');
+        // create a file pointer connected to the output stream
+        $output = fopen('php://output', 'w');
+        fputcsv($output, $selected_array);
+        foreach ($Array_data as $row){
+            fputcsv($output, $row);
+        }
+        fclose($output);
+
+    }
+
+    public function nodeFilter($tempRes,$crawler,$siteitem){
         $resNode = $crawler->filter($siteitem['collection'])->each(function ($node) use ($siteitem){
-            
+            $res = array();
             foreach($siteitem['scrape_data'] as $key => $item){
                 $tempVal = '';
                 $section = $node->filter($item['element']);
@@ -218,6 +262,7 @@ class UserSitesController extends Controller
             }
             return $res;
         });
+        return array_merge($tempRes, $resNode);
     }
 
     public function scrapeGetPosition($section,$item){

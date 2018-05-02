@@ -27,6 +27,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('sites/edit/{id}', 'UserSitesController@edit')->name('admin.sites.edit');
     Route::post('sites/update/{id}', 'UserSitesController@update')->name('admin.sites.update');
     Route::get('sites/preview/{id}', 'UserSitesController@preview')->name('admin.sites.preview');
+    Route::get('sites/downloadcsv/{id}', 'UserSitesController@downloadCsv')->name('admin.sites.downloadcsv');
 
     Route::get('sites/destroy/{id}', 'UserSitesController@destroy')->name('admin.sites.destroy');
 

@@ -6,7 +6,7 @@
 
 
 @section('main-content')
-    <div class="row">
+	<div class="row">
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
@@ -32,27 +32,19 @@
                   <th></th>
                   <th></th>
                 </tr>
-                <tr>
-                  <th>ID</th>
-                  <th>User</th>
-                  <th>Date</th>
-                  <th>Reason</th>
-                  <th>Action</th>
+                
+                 <tr>
+                @foreach($data[0] as $key => $item)
+                  <th>{{ $key }}</th>
+                @endforeach
                 </tr>
-                @foreach($sitelist->user_sites as $item)
+
+                @foreach($data as $item)
                 <tr>
-                  <td>{{ $item->id }}</td>
-                  <td>{{ $item->user->name }}</td>
-                  <td>11-7-2014</td>
-                  <td><a href="{{ $item->url }}">{{ $item->url }}</a></td>
-                  <td>
-                    <div class="btn-group">
-                      <a href="{{ route('admin.sites.preview',['id'=> $item->id]) }}" type="button" class="btn btn-info"><i class="fa fa-search"></i></a>
-                      <a href="{{ route('admin.sites.downloadcsv',['id'=> $item->id]) }}" type="button" class="btn bg-olive"><i class="fa fa-table"></i></a>
-                      <a href="{{ route('admin.sites.edit',['id'=> $item->id]) }}" type="button" class="btn btn-info"><i class="fa fa-edit"></i></a>
-                      <a href="{{ route('admin.sites.destroy',['id'=> $item->id]) }}" type="button" class="btn btn-danger"><i class="fa fa-close"></i></a>
-                    </div>
-                  </td>
+                  @foreach($item as $skey => $sdata)
+                  <td>{{ $sdata }}</td>
+                  
+                  @endforeach
 
                 </tr>
                 @endforeach
