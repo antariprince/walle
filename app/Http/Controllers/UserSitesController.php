@@ -179,11 +179,12 @@ class UserSitesController extends Controller
         $tempRes = array();
         $baseLink = $siteitem['url'];
         if($siteitem['singlepage'] == 'multi'){
-        for($z = 1; $exit != 1 && $z <= 7; $z++){
+        for($z = 1; $exit != 1 && $z <= 5; $z++){
         if($z == 1){
         $crawler = Goutte::request('GET', $baseLink);
             if(count($crawler) > 0){
                 $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
+
             }
             else{
                 $exit = 1;
