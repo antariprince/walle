@@ -54,7 +54,9 @@ class UserSitesController extends Controller
             'user_id' => Auth::id(),
             'collection' => $r->collection,
             'singlepage' => $r->singlepage,
+            'pager' => $r->pager,
             'page_string' => $r->page_string,
+            'replace_with' => $r->replace_with,
             'scrape_data' => $algo
         ]);
 
@@ -108,7 +110,9 @@ class UserSitesController extends Controller
         $algo = $this->buildScrapeAlgo($r);
         $d->url = $r->url;
         $d->singlepage = $r->singlepage;
+        $d->pager = $r->pager;
         $d->page_string = $r->page_string;
+        $d->replace_with = $r->replace_with;
         $d->collection = $r->collection;
         $d->scrape_data = $algo;
         $d->save();
@@ -179,20 +183,19 @@ class UserSitesController extends Controller
         $tempRes = array();
         $baseLink = $siteitem['url'];
         if($siteitem['singlepage'] == 'multi'){
-        for($z = 1; $exit != 1 && $z <= 10; $z++){
+        for($z = 1; $exit != 1 && $z <= 7; $z++){
         if($z == 1){
         $crawler = Goutte::request('GET', $baseLink);
             if(count($crawler) > 0){
                 $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
-
             }
             else{
                 $exit = 1;
             }
         }
         else{
-            $pageAppend = str_replace('***pagenum***',$z,$siteitem['page_string']);
-            $crawler = Goutte::request('GET', $baseLink.$pageAppend);
+            $pageAppend = str_replace('.html','-pg'.$z.'.html',$baseLink);
+            $crawler = Goutte::request('GET', $pageAppend);
             if(count($crawler) > 0){
                 $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
             }

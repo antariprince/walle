@@ -21,6 +21,7 @@ class CreateUserSitesTable extends Migration
             $table->string('collection')->nullable();
             $table->string('scrape_data')->nullable();
             $table->text('page_string')->nullable();
+            $table->text('replace_with')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

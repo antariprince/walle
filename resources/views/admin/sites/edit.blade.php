@@ -23,29 +23,52 @@
                 <div class="form-group">
                   <div class="radio">
                     <label>
-                      <input type="radio" class="singlepageselector" name="singlepage" id="singlepage1" value="single" @if($siteitem->singlepage == 'single')checked="checked"@endif>
-                      Single Page
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
                       <input type="radio" class="singlepageselector" name="singlepage" id="singlepage12" value="multi"  @if($siteitem->singlepage == 'multi')checked="checked"@endif>
                       Multi Page
                     </label>
                   </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" class="singlepageselector" name="singlepage" id="singlepage1" value="single" @if($siteitem->singlepage == 'single')checked="checked"@endif>
+                      Single Page
+                    </label>
+                    
+                  </div>
                 </div>
+                
+                <div id="page_string" @if($siteitem->singlepage == 'single')style="display:none;"@endif>
+                <div class="form-group">
+                  <div class="radio">
+                    <label>
+                      <input type="radio" class="pagerselector" name="pager" id="pager1" value="append" @if($siteitem->pager == 'append')checked="checked"@endif>
+                      Append
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" class="pagerselector" name="pager" id="pager2" value="replace"  @if($siteitem->pager == 'replace')checked="checked"@endif>
+                      Replace
+                    </label>
+                  </div>
+                </div>
+
+                  <div class="form-group">
+                  <label>Page String</label>
+                  <input type="text" name="page_string" class="form-control" @if($siteitem->singlepage == 'multi')value="{{ $siteitem->page_string }}" @endif>
+                  </div>
+                  
+                  <div class="form-group" id="replace_with_string" @if($siteitem->pager == 'append')style="display:none;"@endif>
+                  <label>Replace With</label>
+                  <input type="text" name="replace_with" class="form-control" value="{{ $siteitem->replace_with }}">
+                  </div>
+
+                  </div>
 
                   <div class="form-group" id="collection">
                   <label>Collection</label>
                   <input type="text" name="collection" class="form-control" value="{{ $siteitem->collection }}" >
                   </div>
 
-                  <div class="form-group" id="page_string">
-                  <label>Page String</label>
-                  <input type="text" name="page_string" class="form-control" @if($siteitem->singlepage == 'multi')value="{{ $siteitem->page_string }}" @endif>
-                  </div>
-
-                  
                   <div class="box box-danger">
 
                     @for ($i = 0; $i < count($siteitem->scrape_data); $i++)

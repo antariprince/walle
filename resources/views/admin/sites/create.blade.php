@@ -23,26 +23,52 @@
                   <div class="form-group">
                   <div class="radio">
                     <label>
+                      <input type="radio" class="singlepageselector" name="singlepage" id="singlepage12" value="multi" >
+                      Multi Page
+                    </label>
+                    
+                  </div>
+                  <div class="radio">
+                    <label>
                       <input type="radio" class="singlepageselector" name="singlepage" id="singlepage1" value="single">
                       Single Page
                     </label>
                   </div>
+                </div>
+
+                <div id="page_string">
+                <div class="form-group">
                   <div class="radio">
                     <label>
-                      <input type="radio" class="singlepageselector" name="singlepage" id="singlepage12" value="multi" checked="checked">
-                      Multi Page
+                      <input type="radio" class="pagerselector" name="pager" id="pager1" value="append" checked="checked">
+                      Append
+                    </label>
+                  </div>
+                  <div class="radio">
+                    <label>
+                      <input type="radio" class="pagerselector" name="pager" id="pager2" value="replace" >
+                      Replace
                     </label>
                   </div>
                 </div>
 
+                  <div class="form-group">
+                  <label>Page String</label>
+                  <input type="text" name="page_string" class="form-control" value="{{ old('page_string') }}">
+                  </div>
+
+                  <div class="form-group" id="replace_with_string">
+                  <label>Replace With</label>
+                  <input type="text" name="replace_with" class="form-control" value="{{ old('replace_with') }}">
+                  </div>
+
+                  </div>
+
+                  
+
                   <div class="form-group" id="collection">
                   <label>Collection</label>
                   <input type="text" name="collection" class="form-control" value="{{ old('collection') }}">
-                  </div>
-
-                  <div class="form-group" id="page_string">
-                  <label>Page String</label>
-                  <input type="text" name="page_string" class="form-control" value="{{ old('page_string') }}">
                   </div>
 
                   <div class="box box-danger">

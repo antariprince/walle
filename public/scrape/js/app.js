@@ -29,29 +29,15 @@
     		$('#page_string').show();
     	}
 	});
-    
-}());
 
-(function (){
-
-    var maxFilterField = 10; //Input fields increment limitation
-    var addFilterButton = $('.add_field_button'); //Add button selector
-    var filterWrapper = $('.box-danger'); //Input field wrapper
-    var fieldFilterHTML = '<div class="box-body dynamic_scrape_json"><div class="row"><div class="col-xs-2"><input type="text" class="form-control" placeholder="Title" name="title[]"></div><div class="col-xs-2"><input type="text" class="form-control" placeholder="Target Element" name="element[]"></div><div class="col-xs-3"><input type="text" class="form-control" placeholder="Attribute" name="attribute[]"></div><div class="col-xs-4"><input type="text" class="form-control" placeholder="Filters" name="filters[]"></div><div class="col-xs-1"><a href="javascript:void(0);" class="btn btn-danger remove_button_warning"><i class="fa fa-close"></i></a></div></div></div>'; //New input field html 
-    var y = 1; //Initial field counter is 1
-
-    $(addButton).click(function(){ //Once add button is clicked
-        if(y < maxFilterField){ //Check maximum number of input fields
-            y++; //Increment field counter
-            $(filterWrapper).append(fieldFilterHTML); // Add field html
+    $('.pagerselector').on("change",function() {
+        var x = $('.pagerselector:checked').val();
+        if(x == 'replace'){
+            $('#replace_with_string').show();
         }
-    });
-    $(filterWrapper).on('click', '.remove_filter_button_warning', function(e){ //Once remove button is clicked
-        
-        e.preventDefault();
-        //console.log($(this).parentsUntil('.row'));
-        $(this).closest('.dynamic_filter_scrape_json').remove(); //Remove field html
-        y--; //Decrement field counter
+        else{
+            $('#replace_with_string').hide();
+        }
     });
     
 }());
