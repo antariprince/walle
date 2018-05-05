@@ -43,8 +43,8 @@
                 <tr>
                   <td>{{ $item->id }}</td>
                   <td>{{ $item->user->name }}</td>
-                  <td>11-7-2014</td>
-                  <td><a href="{{ $item->url }}">{{ $item->url }}</a></td>
+                  <td>{{ $item->created_at }}</td>
+                  <td><a href="{{ $item->url }}">{{ str_limit($item->url, $limit = 50, $end = '...') }}</a></td>
                   <td>
                     <div class="btn-group">
                       <a href="{{ route('admin.sites.preview',['id'=> $item->id]) }}" type="button" class="btn bg-maroon"><i class="fa fa-search"></i></a>

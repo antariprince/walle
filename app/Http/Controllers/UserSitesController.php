@@ -179,7 +179,7 @@ class UserSitesController extends Controller
         $tempRes = array();
         $baseLink = $siteitem['url'];
         if($siteitem['singlepage'] == 'multi'){
-        for($z = 1; $exit != 1 && $z <= 5; $z++){
+        for($z = 1; $exit != 1 && $z <= 10; $z++){
         if($z == 1){
         $crawler = Goutte::request('GET', $baseLink);
             if(count($crawler) > 0){
@@ -237,16 +237,17 @@ class UserSitesController extends Controller
     }
 
     public function nodeFilter($tempRes,$crawler,$siteitem){
-        $resNode = $crawler->filter($siteitem['collection'])->each(function ($node) use ($siteitem){
+        $resNode = $crawler->filter($siteitem['collection'])->each(function ($node, $i) use ($siteitem){
             $res = array();
             foreach($siteitem['scrape_data'] as $key => $item){
                 $tempVal = '';
+                $add = true;
                 $section = $node->filter($item['element']);
                 if(count($section) > 0){
                 if($item['attribute'] == 'text'){
                     if(count($section) > 1){
                         //$tempVal = '';
-                        $tempVal = $this->scrapeGetPosition($section,$item);
+                        $tempVal = trim($this->scrapeGetPosition($section,$item));
                     }
                     else{
                         $tempVal = trim($section->text());
@@ -254,7 +255,7 @@ class UserSitesController extends Controller
                 }
                 else{
                     if(count($section) > 1){
-                        $tempVal = $this->scrapeGetPosition($section,$item);
+                        $tempVal = trim($this->scrapeGetPosition($section,$item));
                     }
                     else{
                         $tempVal = trim($section->attr($item['attribute']));
@@ -263,13 +264,22 @@ class UserSitesController extends Controller
                 if($item['filters'] != null){
                     $item['filters'] = json_decode($item['filters'],true);
                     $tempVal = $this->filterItem($tempVal,$item['filters']);
+                    if(!$tempVal){
+                        $add = false;
+                    }
                 }
                 $res[$item['title']] = $tempVal;
+                if(!$add){
+                    return null;
+                }
             }
             }
             return $res;
         });
-        return array_merge($tempRes, $resNode);
+
+        
+        $final = array_filter($resNode, function($var){return !is_null($var);} );
+        return array_merge($tempRes, $final);
     }
 
     public function scrapeGetPosition($section,$item){
@@ -362,6 +372,18 @@ class UserSitesController extends Controller
                 case 'replace':
                     $item = $this->scrapeReplace($item,$filter);
                     break;
+                case 'range':
+                    $res = $this->scrapeRange($item,$filter);
+                    if(!$res){
+                        $item = false;
+                    }
+                    break;
+                case 'condition':
+                    $res = $this->scrapeCondition($item,$filter);
+                    if(!$res){
+                        $item = false;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -394,6 +416,32 @@ class UserSitesController extends Controller
 
     public function scrapeReplace($item, $filter){
         $temp = trim(str_replace($filter['key'], $filter['changeto'], $item));
+        return $temp;
+    }
+    public function scrapeRange($item, $filter){
+        $temp = $item >= $filter['from'] && $item <= $filter['to'];
+        return $temp;
+    }
+    public function scrapeCondition($item, $filter){
+        $temp = false;
+        switch($filter['operator'])
+        {
+            case ">":
+                $temp = $item > $filter['val'];
+                break;
+            case "<":
+                $temp = $item < $filter['val'];
+                break;
+            case ">=":
+                $temp = $item >= $filter['val'];
+                break;
+            case "<=":
+                $temp = $item <= $filter['val'];
+                break;
+            case "==":
+                $temp = $item == $filter['val'];
+                break;
+        }
         return $temp;
     }
 }
