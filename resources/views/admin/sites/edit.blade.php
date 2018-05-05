@@ -53,8 +53,18 @@
                 </div>
 
                   <div class="form-group">
-                  <label>Page String</label>
+                    <div class="row">
+                        <div class="col-xs-8">
+                          <label>Page String</label>
                   <input type="text" name="page_string" class="form-control" @if($siteitem->singlepage == 'multi')value="{{ $siteitem->page_string }}" @endif>
+                        </div>
+                    
+                        <div class="col-xs-4">
+                          <label>Limit</label>
+                  <input type="text" name="limit" class="form-control" value="{{ $siteitem->limit }}">
+                        </div>
+                    </div>
+                  
                   </div>
                   
                   <div class="form-group" id="replace_with_string" @if($siteitem->pager == 'append')style="display:none;"@endif>

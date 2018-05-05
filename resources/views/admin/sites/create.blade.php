@@ -52,6 +52,21 @@
                   </div>
                 </div>
 
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-xs-8">
+                          <label>Page String</label>
+                  <input type="text" name="page_string" class="form-control" value="{{ old('page_string') }}">
+                        </div>
+                    
+                        <div class="col-xs-4">
+                          <label>Limit</label>
+                  <input type="text" name="limit" class="form-control" value="{{ $siteitem->limit }}">
+                        </div>
+                    </div>
+                  
+                  </div>
+
                   <div class="form-group">
                   <label>Page String</label>
                   <input type="text" name="page_string" class="form-control" value="{{ old('page_string') }}">

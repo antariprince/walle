@@ -56,6 +56,7 @@ class UserSitesController extends Controller
             'singlepage' => $r->singlepage,
             'pager' => $r->pager,
             'page_string' => $r->page_string,
+            'limit' => $r->limit,
             'replace_with' => $r->replace_with,
             'scrape_data' => $algo
         ]);
@@ -111,6 +112,7 @@ class UserSitesController extends Controller
         $d->url = $r->url;
         $d->singlepage = $r->singlepage;
         $d->pager = $r->pager;
+        $d->limit = $r->limit;
         $d->page_string = $r->page_string;
         $d->replace_with = $r->replace_with;
         $d->collection = $r->collection;
@@ -183,7 +185,12 @@ class UserSitesController extends Controller
         $tempRes = array();
         $baseLink = $siteitem['url'];
         if($siteitem['singlepage'] == 'multi'){
-        for($z = 1; $exit != 1 && $z <= 7; $z++){
+        for($z = 1; $exit != 1; $z++){
+        if($siteitem['limit'] > 0){
+            if($z == $siteitem['limit']){
+                $exit = 1;
+            }
+        }
         if($z == 1){
         $crawler = Goutte::request('GET', $baseLink);
             if(count($crawler) > 0){
@@ -194,8 +201,8 @@ class UserSitesController extends Controller
             }
         }
         else{
-            $pageAppend = str_replace('.html','-pg'.$z.'.html',$baseLink);
-            $crawler = Goutte::request('GET', $pageAppend);
+            $link = $this->buildScrapePageLink($siteitem,$baseLink,$z);
+            $crawler = Goutte::request('GET', $link);
             if(count($crawler) > 0){
                 $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
             }
@@ -211,9 +218,18 @@ class UserSitesController extends Controller
             $tempRes = $this->nodeFilter($tempRes,$crawler,$siteitem);
         }
         return $tempRes;
-        //$this->exportCsv($tempRes); 
-        //return view('admin.sites.preview')->with('data',$tempRes);
-        //dd($tempRes);
+    }
+
+    public function buildScrapePageLink($siteitem,$baseLink,$z){
+        if($siteitem['pager'] == 'append'){
+        $pageAppend = str_replace('***pagenum***',$z,$siteitem['page_string']);
+        return $baseLink.$pageAppend;
+        }
+        else{
+            $pageAppend = str_replace('***pagenum***',$z,$siteitem['replace_with']);
+            $link = str_replace($siteitem['page_string'],$pageAppend,$baseLink);
+            return $link;
+        }
     }
 
     public function exportCsv($data){  
